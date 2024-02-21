@@ -5,13 +5,17 @@ const jwt = require("jsonwebtoken");
 const app = express();
 const PORT = 5000;
 const { executeDB } = require("./db");
-const JWT_SECRET = "secret"; // Clave secreta para firmar los tokens JWT
+const JWT_SECRET = "secret";
 
-// Middleware
+const cors = require("cors");
+
+/* parte cors */
+app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-// Base de datos ficticia de usuarios
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 
 app.post("/register", async (req, res) => {
   try {
@@ -46,7 +50,6 @@ app.post("/register", async (req, res) => {
   }
 });
 
-// Ruta para inicio de sesión
 app.post("/login", async (req, res) => {
   const email = req.body.email;
   const password = req.body.password;
@@ -62,7 +65,6 @@ app.post("/login", async (req, res) => {
     const user = loginUser[0];
 
     if (await bcrypt.compare(password, user.password)) {
-      // Generar token JWT
       const token = jwt.sign({ email: user.email }, JWT_SECRET);
       res.json({ token });
     } else {
@@ -76,7 +78,6 @@ app.post("/login", async (req, res) => {
   }
 });
 
-// Iniciar el servidor
 app.listen(PORT, () => {
   console.log(`Servidor corriendo en el puerto ${PORT}`);
 });
